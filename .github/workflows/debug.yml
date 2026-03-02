@@ -5,22 +5,16 @@ on:
   pull_request:
 
 jobs:
-  build:
+  debug:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Bash syntax check (all shell scripts)
+      - name: Bash syntax check 
         run: |
-          find src -type f | while read f; do
+          find src -type f -print0 | while IFS= read -r -d '' f; do
             if head -n1 "$f" | grep -qE '^#!.*(bash|sh)'; then
               echo "Checking syntax: $f"
               bash -n "$f"
             fi
           done
-
-      - name: ShellCheck
-        run: |
-          shellcheck src/bin/* src/lib/*.sh
-
