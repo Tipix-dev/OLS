@@ -1,5 +1,4 @@
-PREFIX ?= $(HOME)/.local/share
-OLS_DIR := $(PREFIX)/OLS
+OLS_DIR := $(HOME)/.local/share/OLS 
 
 BIN := $(OLS_DIR)/bin
 LIB := $(OLS_DIR)/lib

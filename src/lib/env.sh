@@ -2,7 +2,7 @@
 export OLS_VERSION="0.3.1"
  
 # ===== Paths =====
-OLS_DIR="$HOME/OLS"
+OLS_DIR="$HOME/.local/share/OLS"
 LOG_FILE="$OLS_DIR/logs.log"
 
 info() {

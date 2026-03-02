@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 # OLS command: olsp
-# Handles plugin creation, build, installation, and listing
 
 set -euo pipefail
 IFS=$'\n\t'
 
-source "$HOME/.local/OLS/lib/env.sh"
-
-# ===== Ensure plugins dir exists =====
-mkdir -p "$PLUGINS_DIR"
+source "$HOME/.local/share/OLS/lib/env.sh"
 
 # ===== Main =====
 case "${1-}" in
