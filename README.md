@@ -3,11 +3,9 @@
 OLS (Open Linux Shell) - This is a project aimed at improving the work with the terminal.
 
 ## installation
-clone the code
-```Bash
-$ git clone git@github.com:artemkolba321-spec/OLS.git
-$ cd OLS
-```
+
+Download the .tar.gz archive from [GitHub Releases](https://github.com/artemkolba321-spec/OLS/releases) and go to it
+<br>
 next installation
 ```Bash
 make
