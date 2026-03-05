@@ -1,4 +1,4 @@
-OLS_DIR ?= $(HOME)/.local/share/OLS
+OLS_DIR := $(HOME)/.local/share/OLS
 
 BIN := $(OLS_DIR)/bin
 LIB := $(OLS_DIR)/lib
