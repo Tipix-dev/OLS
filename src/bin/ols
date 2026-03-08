@@ -24,77 +24,74 @@ interactive:
     <command> [args] - run system command
 EOF
 }
-
 ols_update() {
 
-    FORCE=false
-    CHECK=false
+    mode="update"
+    branch="lts"
 
     for arg in "$@"; do
         case "$arg" in
-            --check) CHECK=true ;;
-            --force) FORCE=true ;;
-            "") ;;
-            *) echo "Unknown option: $arg"; return 1 ;;
+            --check) mode="check" ;;
+            --force) mode="force" ;;
+            --nolts) branch="main" ;;
+            *) ;;
         esac
     done
 
     CURRENT=$(cat "$OLS_DIR/.version" 2>/dev/null || echo "0.0.0")
+    REPO="artemkolba321-spec/OLS"
+    TMP_DIR=$(mktemp -d)
+    STATE_FILE="$HOME/.local/share/ols/state.json"
+    mkdir -p "$(dirname "$STATE_FILE")"
 
-    LATEST_TAG=$(curl -fsSL "https://api.github.com/repos/artemkolba321-spec/OLS/releases/latest" \
-                 | grep '"tag_name":' | cut -d '"' -f4)
-    if [[ -z "$LATEST_TAG" ]]; then
-        echo "Cannot fetch latest release."
-        return 1
-    fi
-    LATEST="${LATEST_TAG#v}"
-
-    # ===== CHECK ONLY =====
-    if [[ "$CHECK" == true ]]; then
-        if [[ "$LATEST" == "$CURRENT" ]]; then
-            echo "OLS is up to date ($CURRENT)"
-        else
-            echo "Update available: $CURRENT → $LATEST"
-        fi
-        return
-    fi
-
-    # ===== NORMAL UPDATE CHECK =====
-    if [[ "$FORCE" == false && "$LATEST" == "$CURRENT" ]]; then
-        echo "Already up to date ($CURRENT)"
-        return
-    fi
-
-    # ===== UPDATE =====
-    if [[ "$FORCE" == true ]]; then
-        echo "Force reinstalling OLS $LATEST"
+    if [[ "$branch" == "lts" ]]; then
+        LATEST_TAG=$(curl -s "https://api.github.com/repos/$REPO/tags" | \
+                     grep '"name":' | grep 'lts' | head -n1 | sed -E 's/.*"([^"]+)".*/\1/')
+        [[ -z "$LATEST_TAG" ]] && { echo "Cannot fetch latest LTS."; return 1; }
+        REF="$LATEST_TAG"
     else
-        echo "Updating OLS: $CURRENT → $LATEST"
+        LATEST_SHA=$(curl -s "https://api.github.com/repos/$REPO/commits/main" | \
+                     grep '"sha":' | head -n1 | sed -E 's/.*"([^"]+)".*/\1/')
+        [[ -z "$LATEST_SHA" ]] && { echo "Cannot fetch latest main commit."; return 1; }
+        REF="$LATEST_SHA"
     fi
 
-    TMP="/tmp/ols"
-    rm -rf "$TMP"
-    mkdir -p "$TMP"
+    CURRENT_REF=$(jq -r '.last_ref // ""' "$STATE_FILE" 2>/dev/null || echo "")
 
-    echo "Downloading release..."
-    curl -L -o "$TMP/ols.tar.gz" \
-        "https://github.com/artemkolba321-spec/OLS/archive/refs/tags/$LATEST_TAG.tar.gz" \
-        || { echo "Download failed."; return 1; }
+    if [[ "$mode" == "check" ]]; then
+        if [[ "$REF" != "$CURRENT_REF" ]]; then
+            echo "Update available: $REF (current: $CURRENT_REF)"
+        else
+            echo "Already up to date: $CURRENT_REF"
+        fi
+        return 0
+    fi
 
-    echo "Extracting..."
-    tar -xzf "$TMP/ols.tar.gz" -C "$TMP" || { echo "Extraction failed."; return 1; }
+    if [[ "$mode" == "update" && "$REF" == "$CURRENT_REF" ]]; then
+        echo "Already up to date: $CURRENT_REF"
+        return 0
+    fi
 
-    SRC=$(find "$TMP" -maxdepth 1 -type d -name "OLS-*")
-    [[ -z "$SRC" ]] && { echo "Cannot find extracted source."; return 1; }
+    echo "Downloading OLS ($branch) $REF..."
+    if [[ "$branch" == "lts" ]]; then
+        curl -L "https://github.com/$REPO/archive/refs/tags/$REF.tar.gz" -o "$TMP_DIR/ols.tar.gz"
+        TAR_DIR="$TMP_DIR/OLS-$REF"
+    else
+        curl -L "https://github.com/$REPO/archive/refs/heads/main.tar.gz" -o "$TMP_DIR/ols.tar.gz"
+        TAR_DIR="$TMP_DIR/OLS-main"
+    fi
 
-    echo "Reinstalling OLS..."
-    cd "$SRC" || return 1
-    make reinstall || { echo "Reinstall failed."; return 1; }
+    tar -xzf "$TMP_DIR/ols.tar.gz" -C "$TMP_DIR"
 
-    echo "$LATEST" > "$OLS_DIR/.version"
-    echo "OLS updated to $LATEST"
+    echo "Installing..."
+    cp -r "$TAR_DIR/src/bin/"* "$OLS_DIR/bin/"
+    cp -r "$TAR_DIR/src/lib/"* "$OLS_DIR/lib/"
+    cp -r "$TAR_DIR/assets/"* "$OLS_DIR/assets/"
 
-    rm -rf "$TMP"
+    echo "{\"last_check\":$(date +%s),\"last_ref\":\"$REF\"}" > "$STATE_FILE"
+    echo "OLS updated to $REF"
+
+    rm -rf "$TMP_DIR"
 }
 
 # ===== Doctor =====
