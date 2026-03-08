@@ -9,6 +9,7 @@ LOGS := $(OLS_DIR)/logs.log
 
 SRC_BIN := src/bin
 SRC_LIB := src/lib
+SRC_SBIN := src/sbin
 SRC_ASSETS := assets
 
 .PHONY: all install uninstall reinstall
@@ -22,6 +23,7 @@ install:
 	@cp -r $(SRC_BIN)/* $(BIN)/ 2>/dev/null || true
 	@cp -r $(SRC_LIB)/* $(LIB)/ 2>/dev/null || true
 	@cp -r $(SRC_ASSETS)/* $(ASSETS)/ 2>/dev/null || true
+	@cp -r $(SRC_SBIN)/* $(SBIN)/ 2>/dev/null || true
 	@chmod 755 $(BIN)/* $(LOGS) 2>/dev/null || true
 	@chmod 700 $(LIB)/ 2>/dev/null || true
 	@echo "OLS installed successfully."
