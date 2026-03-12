@@ -4,13 +4,6 @@ title: "[Feature]: "
 labels: ["enhancement"]
 
 body:
-  - type: input
-    id: title
-    attributes:
-      label: Title
-      placeholder: Short feature name
-    validations:
-      required: true
 
   - type: textarea
     id: description

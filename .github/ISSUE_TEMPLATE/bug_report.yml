@@ -3,12 +3,6 @@ description: "Use this template to report a bug in OLS. Include version and step
 
 body:
   - type: input
-    id: title
-    attributes:
-      label: Title
-      description: "Short summary of the bug"
-      placeholder: "Example: 'Error when running ols update'"
-  - type: input
     id: version
     attributes:
       label: Version
