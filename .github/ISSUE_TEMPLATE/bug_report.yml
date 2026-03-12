@@ -1,0 +1,26 @@
+name: "Bug report"
+description: "Use this template to report a bug in OLS. Include version and steps to reproduce."
+
+body:
+  - type: input
+    id: title
+    attributes:
+      label: Title
+      description: "Short summary of the bug"
+      placeholder: "Example: 'Error when running ols update'"
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: "OLS version where the bug happened"
+      placeholder: "Example: v0.4.0"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: "Detailed description and reproduction steps"
+      placeholder: "Example: 'Running ols update on 0.4.0 does not update to latest LTS version'"
+    validations:
+      required: true
