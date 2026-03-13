@@ -20,14 +20,35 @@
     - commit your changes:
     ```
     git add .
-    git commit -m "Fix"
+    git commit -m "Fix: correct path handling in mkfile"
     ```
     - push your branch:
     ```
     git push origin feature-name
     ```
 
+## Code Style
 
-Thanks for helping make *OLS* better! 💚
+OLS follows a few simple principles:
 
+- Avoid unnecessary flags and options
+- Commands must be **pipeline-friendly**
+- Use **stdin / stdout / stderr** correctly
+- Add **clear logging** when actions are performed
+
+General guidelines:
+
+- Use meaningful variable names
+- Keep functions small
+- Comment non-obvious logic
+- Follow existing project style
+
+## Recommendations
+
+- Do not start with complex parts of the project.
+- Begin with the **README**, documentation, or other small improvements.
+- If you know **Bash**, you can help improve helper scripts.
+
+> All contributions are welcome — from small documentation fixes to new features.
+> Thanks for helping make *OLS* better! 💚
 
