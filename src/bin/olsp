@@ -13,7 +13,7 @@ case "${1-}" in
         if [[ -n "${2-}" ]]; then
             PLUGIN_NAME="$2"
             [[ -d "$PLUGIN_NAME" ]] && warn "Directory '$PLUGIN_NAME' already exists"
-            mkdir "$PLUGIN_NAME"
+            mkdir -p "$PLUGIN_NAME"
             cd "$PLUGIN_NAME"
         else
             PLUGIN_NAME="$(basename "$PWD")"
@@ -30,7 +30,7 @@ EOF
         SECRET="OLS-$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 30)-d"
         PUB="$(head /dev/urandom | tr -dc 0-9 | head -c 10)"
         
-        mkdir keys
+        mkdir -p keys
         touch keys/$PLUGIN_NAME.pub
         touch keys/$PLUGIN_NAME.key
         
@@ -48,7 +48,7 @@ print("Hello from plugin!")
 EOF
 
         chmod 644 package.json plugin.lua
-        mkdir files
+        mkdir -p files
 
         echo "Plugin '$PLUGIN_NAME' initialized successfully!"
         ;;
@@ -105,17 +105,19 @@ EOF
         ;;
     run)
         if [[ -n "${2-}" ]]; then
+            # run installed plugin
             PLUGIN_NAME="$2"
-            [[ -d "$PLUGIN_NAME" ]] && warn "Directory '$PLUGIN_NAME' already exists"
-            mkdir "$PLUGIN_NAME"
-            cd "$PLUGIN_NAME"
-        else
-            PLUGIN_NAME="$(basename "$PWD")"
-        fi
-        [[ -z "$PLUGIN_NAME" ]] && warn "Usage: olsp run <plugin-name>"
+            PLUGIN_PATH="$PLUGINS_DIR/$PLUGIN_NAME/plugin.lua"
 
-        PLUGIN_PATH="$PLUGINS_DIR/$PLUGIN_NAME/plugin.lua"
-        [[ ! -f "$PLUGIN_PATH" ]] && warn "plugin.lua not found"
+            [[ ! -f "$PLUGIN_PATH" ]] && warn "plugin.lua not found for plugin '$PLUGIN_NAME'"
+        else
+            # run plugin in current directory
+            PLUGIN_PATH="$PWD/plugin.lua"
+
+            [[ ! -f "$PLUGIN_PATH" ]] && warn "plugin.lua not found in current directory"
+        fi
+
+        command -v lua >/dev/null || ee "Lua not installed"
 
         lua "$PLUGIN_PATH"
         ;;
