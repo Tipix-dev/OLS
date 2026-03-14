@@ -5,6 +5,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 source "$HOME/.local/share/OLS/lib/env.sh"
+PLUGINS_DIR="${PLUGINS_DIR:-$OLS_DIR/plugins}"
 
 # ===== Main =====
 case "${1-}" in
@@ -92,17 +93,32 @@ EOF
         PLUGIN_DIR="${2-}"
         [[ -z "$PLUGIN_DIR" ]] && warn "Usage: olsp build <plugin-dir>"
         [[ ! -d "$PLUGIN_DIR" ]] && warn "Plugin directory not found"
-        [[ ! -f "package.json" ]] && ee "package.json not found"
-        PLUGIN_NAME="$(basename "$PLUGIN_DIR")"
-        PARENT_DIR="$(dirname "$PLUGIN_DIR")"
+        [[ ! -f "$PLUGIN_DIR/package.json" ]] && ee "package.json not found"
 
+        PARENT_DIR="$(dirname "$PLUGIN_DIR")"
+        PLUGIN_NAME="$(basename "$PLUGIN_DIR")"
         # Archive plugin directory with correct structure
         tar -czf "$PLUGIN_NAME.olsp" -C "$PARENT_DIR" "$PLUGIN_NAME"
 
         echo "Plugin built: $PLUGIN_NAME.olsp"
         info "Built plugin: $PLUGIN_NAME"
         ;;
+    run)
+        if [[ -n "${2-}" ]]; then
+            PLUGIN_NAME="$2"
+            [[ -d "$PLUGIN_NAME" ]] && warn "Directory '$PLUGIN_NAME' already exists"
+            mkdir "$PLUGIN_NAME"
+            cd "$PLUGIN_NAME"
+        else
+            PLUGIN_NAME="$(basename "$PWD")"
+        fi
+        [[ -z "$PLUGIN_NAME" ]] && warn "Usage: olsp run <plugin-name>"
 
+        PLUGIN_PATH="$PLUGINS_DIR/$PLUGIN_NAME/plugin.lua"
+        [[ ! -f "$PLUGIN_PATH" ]] && warn "plugin.lua not found"
+
+        lua "$PLUGIN_PATH"
+        ;;
 
     install)
         PACKAGE_FILE="${2-}"
@@ -142,8 +158,7 @@ EOF
         fi
 
         # validate package.json
-        [[ ! -f "$TARGET_DIR/package.json" ]] &&  "package.json not found in package"
-
+        [[ ! -f "$TARGET_DIR/package.json" ]] && ee "package.json not found in package"
         echo "Plugin '$PLUGIN_NAME' installed to $PLUGINS_DIR"
         info "Installed plugin: $PLUGIN_NAME"
         ;;

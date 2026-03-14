@@ -185,7 +185,7 @@ ols_doctor() {
 
     SYSTEM_DIRS=("$OLS_DIR" "$BIN_DIR")
     SYSTEM_FILES=("$LOG_FILE")
-    DEPENDENCIES=(git wget bash tree lua jq) 
+    DEPENDENCIES=(git wget bash tree realpath lua jq) 
 
     # ===== Check directories =====
     for dir in "${SYSTEM_DIRS[@]}"; do
@@ -299,6 +299,10 @@ case "${1-}" in
         ;;
     --version)
         echo "$OLS_VERSION"
+        ;;
+    -e)
+        shift
+        bash -c "$@"
         ;;
     doctor)
         ols_doctor
