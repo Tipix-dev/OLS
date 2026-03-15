@@ -256,7 +256,8 @@ interactive_shell() {
                 ;;
             run)
                 if [[ -z "${args[0]-}" ]]; then
-                    echo "Usage: import <module> [args...]"
+                    echo "Usage: run
+                     <module> [args...]"
                     continue
                 fi
 
