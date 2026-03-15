@@ -39,4 +39,5 @@ everything is ready
    - Packages are downloaded once and can be used offline afterwards.
    - predictability
    - the user learns once
-
+## contacts
+- [Discussions](https://github.com/artemkolba321-spec/OLS/discussions)
