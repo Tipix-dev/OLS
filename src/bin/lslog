@@ -23,8 +23,8 @@ description:
 
 examples:
     lslog                    show all logs
-    lslog | xget EE          show only errors
-    lslog | xget gx          show only gx command logs
+    lslog | grep EE          show only errors
+    lslog | grep gx          show only gx command logs
     lslog | tail -20         show the last 20 log entries
     lslog | sort | uniq      show unique log entries
 EOF
