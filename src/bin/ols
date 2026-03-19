@@ -195,7 +195,7 @@ ols_doctor() {
 
     SYSTEM_DIRS=("$OLS_DIR" "$BIN_DIR")
     SYSTEM_FILES=("$LOG_FILE")
-    DEPENDENCIES=(git wget bash tree realpath lua jq openssl) 
+    DEPENDENCIES=(git wget bash tree realpath curl lua jq openssl) 
 
     # ===== Check directories =====
     for dir in "${SYSTEM_DIRS[@]}"; do
