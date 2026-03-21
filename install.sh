@@ -36,8 +36,7 @@ wget -O "$ARCHIVE" "https://github.com/$REPO/archive/refs/tags/$LATEST_TAG.tar.g
 # ===== Extract =====
 echo "[OLS] Extracting..."
 tar -xzf "$ARCHIVE" -C "$TMP_DIR"
-SRC_DIR="$TMP_DIR/$(tar -tzf "$ARCHIVE" | head -1 | cut -f1 -d"/")"
-cd "$SRC_DIR"
+cd "$TMP_DIR"/*/
 
 # ===== Install =====
 echo "[OLS] Installing..."
