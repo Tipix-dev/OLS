@@ -1,7 +1,6 @@
 # OLS
 ![OLS Banner](assets/banner.svg)<br>
-OLS (Open Linux Shell) - This is a project aimed at improving the work with the terminal.
-
+OLS (Open Linux Shell) is a toolkit of CLI utilities designed to make terminal workflows more predictable, logged, and pipeline-friendly.
 ## installation
 ```bash
 bash <(curl -sSL https://raw.githubusercontent.com/artemkolba321-spec/OLS/main/install.sh)
