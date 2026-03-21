@@ -317,7 +317,7 @@ case "${1-}" in
         ;;
     -e)
         shift
-        eval "${@:2}"
+        bash -c "$@"
         ;;
     doctor)
         ols_doctor

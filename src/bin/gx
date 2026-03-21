@@ -39,6 +39,18 @@ else
     dir="$(basename "$repo")"
 fi
 
+if [[ "$repo" =~ ^https://gitlab.com/ ]]; then
+    url="$repo"
+    dir="$(basename "$repo" .git)"
+elif [[ "$repo" =~ ^git@gitlab.com: ]]; then
+    url="$repo"
+    dir="$(basename "$repo" .git)"
+else
+    url="https://gitlab.com/$repo.git"
+    dir="$(basename "$repo")"
+fi
+
+
 # If directory exists, skip cloning
 if [[ -d "$dir" ]]; then
     echo "gx: directory '$dir' already exists, skipping clone"
