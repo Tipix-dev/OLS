@@ -13,6 +13,7 @@ SRC_LIB := src/lib
 SRC_SBIN := src/sbin
 SRC_ASSETS := assets
 SRC_VERSION := .version
+SRC_CONFIG := config.toml.template
 
 .PHONY: all install uninstall reinstall
 

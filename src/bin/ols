@@ -105,15 +105,7 @@ ols_update() {
 
     # ===== Install files =====
     echo "Installing..."
-    mkdir -p "$OLS_DIR/bin" "$OLS_DIR/lib" "$OLS_DIR/sbin" "$OLS_DIR/assets"
-
-    [[ -d "$TAR_DIR/src/bin" ]] && cp -r "$TAR_DIR/src/bin/"* "$OLS_DIR/bin/"
-    [[ -d "$TAR_DIR/src/lib" ]] && cp -r "$TAR_DIR/src/lib/"* "$OLS_DIR/lib/"
-    [[ -d "$TAR_DIR/assets" ]] && cp -r "$TAR_DIR/assets/"* "$OLS_DIR/assets/"
-    [[ -d "$TAR_DIR/src/sbin" ]] && cp -r "$TAR_DIR/src/sbin/"* "$OLS_DIR/sbin/"
-
-    chmod 755 "$OLS_DIR/bin/"* "$OLS_DIR/sbin/"* 2>/dev/null || true
-    chmod -R 700 "$OLS_DIR/lib" 2>/dev/null || true
+    make reinstall
 
     # ===== Update state =====
     echo "{\"last_check\":$(date +%s),\"last_ref\":\"$REF\"}" > "$STATE_FILE"
