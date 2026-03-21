@@ -2,66 +2,75 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-printf "If you really want to install this script, it may modify your shell files [N/y]: "
-read "${confirm:-N}"
-
-if [[ confirm == 'n' || confirm == 'N' ]]; then
-    echo "canceled"
-fi
-
 REPO="artemkolba321-spec/OLS"
-SHELL_NAME="$(basename "$SHELL")"
 echo "[OLS] Installing..."
 
-# ===== deps =====
-for cmd in curl tar; do
+# ===== Confirm =====
+printf "This will modify your shell config. Continue? [y/N]: "
+read -r confirm
+confirm="${confirm:-N}"
+if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
+    echo "[OLS] Canceled"
+    exit 0
+fi
+
+# ===== Dependencies =====
+for cmd in wget tar make; do
     command -v "$cmd" >/dev/null || { echo "Missing $cmd"; exit 1; }
 done
 
 TMP_DIR="$(mktemp -d)"
 
+# ===== Fetch latest LTS =====
 echo "[OLS] Fetching latest LTS..."
-
-LATEST_TAG=$(curl -s "https://api.github.com/repos/$REPO/tags" | \
+LATEST_TAG=$(wget -qO- "https://api.github.com/repos/$REPO/tags" | \
     grep '"name":' | grep 'lts' | head -n1 | sed -E 's/.*"([^"]+)".*/\1/')
-
 [[ -z "$LATEST_TAG" ]] && { echo "Failed to fetch LTS"; exit 1; }
-
 echo "[OLS] Latest: $LATEST_TAG"
 
-# ===== download =====
+# ===== Download =====
+ARCHIVE="$TMP_DIR/OLS-$LATEST_TAG.tar.gz"
 echo "[OLS] Downloading..."
-wget "https://github.com/$REPO/archive/refs/tags/$LATEST_TAG.tar.gz"
+wget -O "$ARCHIVE" "https://github.com/$REPO/archive/refs/tags/$LATEST_TAG.tar.gz"
 
-# ===== extract =====
+# ===== Extract =====
 echo "[OLS] Extracting..."
 tar -xzf "$ARCHIVE" -C "$TMP_DIR"
-
-SRC_DIR="$TMP_DIR/$LATEST_TAG"
+SRC_DIR="$TMP_DIR/OLS-$LATEST_TAG"
 cd "$SRC_DIR"
 
-# ===== install =====
+# ===== Install =====
 echo "[OLS] Installing..."
+make reinstall 
 
-if command -v make >/dev/null; then
-    make reinstall
-else
-    echo "[OLS] make not found, fallback install"
-    exit 1
+# ===== RC detection =====
+detect_rc_file() {
+    case "$(basename "$SHELL")" in
+        bash) echo "$HOME/.bashrc" ;;
+        zsh) echo "$HOME/.zshrc" ;;
+        fish) echo "$HOME/.config/fish/config.fish" ;;
+        *) echo "$HOME/.profile" ;;
+    esac
+}
+RC_FILE="$(detect_rc_file)"
+
+# ===== PATH update =====
+LINE="export PATH=\"\$HOME/.local/share/OLS/bin:\$PATH\""
+if ! grep -Fxq "$LINE" "$RC_FILE" 2>/dev/null; then
+    echo "$LINE" >> "$RC_FILE"
+    echo "[OLS] PATH added to $RC_FILE"
 fi
 
-# ===== cleanup =====
+# ===== env.sh =====
+ENV_LINE="source \"\$HOME/.local/share/OLS/lib/env.sh\""
+if ! grep -Fxq "$ENV_LINE" "$RC_FILE" 2>/dev/null; then
+    echo "$ENV_LINE" >> "$RC_FILE"
+    echo "[OLS] env.sh added to $RC_FILE"
+fi
+
+# ===== Cleanup =====
 rm -rf "$TMP_DIR"
 
+echo
 echo "[OLS] Installed successfully!"
-
-# ===== PATH check =====
-if [[ ":$PATH:" != *":$HOME/.local/share/OLS/bin:"* ]]; then
-    echo
-    echo "[WARNING] ~/.local/share/OLS/bin is not in PATH"
-    echo 'export PATH="$HOME/.local/share/OLS/bin:$PATH"' >> "$SHELL_NAME"
-fi
-
-echo 'source "$HOME/.local/share/OLS/lib/env.sh"' >> "$SHELL_NAME"
-
-echo "[OLS] Done!"
+echo "Run: source $RC_FILE or restart your shell"
