@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Open Linux Shell (OLS)
 
-set -u
+set -euo pipefail
 IFS=$'\n\t'
 
 source "$HOME/.local/share/OLS/lib/env.sh"
@@ -95,16 +95,13 @@ ols_update() {
     fi
 
     # ===== Extract archive =====
-    tar -xzf "$ARCHIVE" -C "$ARCHIVE_DIR" || { echo "Extraction failed"; rm -rf "$TMP_DIR"; return 1; }
+    tar -xzf "$ARCHIVE" -C "$ARCHIVE_DIR"|| { echo "Extraction failed"; rm -rf "$TMP_DIR"; return 1; }
 
-    if [[ "$branch" == "lts" ]]; then
-        TAR_DIR="$ARCHIVE_DIR/OLS-$REF"
-    else
-        TAR_DIR="$ARCHIVE_DIR/OLS-main"
-    fi
+    TAR_DIR=$(find "$ARCHIVE_DIR" -mindepth 1 -maxdepth 1 -type d | head -n1)
 
     # ===== Install files =====
     echo "Installing..."
+    cd "$TAR_DIR" || return 1
     make reinstall
 
     # ===== Update state =====
@@ -114,102 +111,32 @@ ols_update() {
 
 }
 
-# ===== Doctor =====
 ols_doctor() {
+    set -u
+
     echo "OLS Doctor report"
     echo "------------------"
 
-    # ===== Counters =====
-    ok_count=0
-    warn_count=0
-    fail_count=0
-
-    # ===== Checked paths to avoid duplicates =====
-    declare -A checked
-
-    # ===== Universal check function =====
-    check() {
-        local type="$1"
-        local target="$2"
-
-        # empty target
-        [[ -z "$target" ]] && { echo "[WARN] Empty target for type: $type"; ((warn_count++)); return; }
-
-        # normalize path for dirs/files
-        if [[ "$type" == "dir" || "$type" == "file" ]]; then
-            target=$(realpath -m "$target")
-        fi
-
-        # skip if already checked
-        [[ -n "${checked[$target]+_}" ]] && return
-        checked[$target]=1
-
-        # ===== Check by type =====
-        case "$type" in
-            dir)
-                if [[ -d "$target" ]]; then
-                    echo "[OK]     Directory: $target"
-                    ((ok_count++))
-                else
-                    echo "[FAIL]   Directory missing: $target"
-                    ((fail_count++))
-                fi
-                ;;
-            file)
-                if [[ -f "$target" ]]; then
-                    echo "[OK]     File: $target"
-                    ((ok_count++))
-                else
-                    echo "[FAIL]   File missing: $target"
-                    ((fail_count++))
-                fi
-                ;;
-            cmd)
-                if command -v "$target" >/dev/null 2>&1; then
-                    echo "[OK]     Command: $target"
-                    ((ok_count++))
-                else
-                    echo "[FAIL]   Command missing: $target"
-                    ((fail_count++))
-                fi
-                ;;
-            *)
-                echo "[WARN] Unknown check type: $type"
-                ((warn_count++))
-                ;;
-        esac
-    }
-
-    # ===== Paths & dependencies =====
-    OLS_DIR="${OLS_DIR:-$HOME/OLS}"
+    OLS_DIR="${OLS_DIR:-$HOME/.local/share/OLS}"
     BIN_DIR="${BIN_DIR:-$OLS_DIR/bin}"
     LOG_FILE="${LOG_FILE:-$OLS_DIR/logs.log}"
 
     SYSTEM_DIRS=("$OLS_DIR" "$BIN_DIR")
     SYSTEM_FILES=("$LOG_FILE")
-    DEPENDENCIES=(git wget bash tree realpath curl lua jq openssl) 
+    DEPENDENCIES=(git wget bash tree realpath curl lua jq make openssl)
 
-    # ===== Check directories =====
     for dir in "${SYSTEM_DIRS[@]}"; do
-        check dir "$dir"
+        [[ -d "$dir" ]] && echo "[OK] Directory: $dir" || echo "[FAIL] Directory missing: $dir"
     done
 
-    # ===== Check files =====
     for file in "${SYSTEM_FILES[@]}"; do
-        check file "$file"
+        [[ -f "$file" ]] && echo "[OK] File: $file" || echo "[WARN] File missing: $file"
     done
 
-    # ===== Check commands =====
     for cmd in "${DEPENDENCIES[@]}"; do
-        check cmd "$cmd"
+        command -v "$cmd" >/dev/null 2>&1 && echo "[OK] Command: $cmd" || echo "[FAIL] Command missing: $cmd"
     done
 
-    # ===== Summary =====
-    echo
-    echo "Summary:"
-    echo "  OK: $ok_count"
-    echo "  WARN: $warn_count"
-    echo "  FAIL: $fail_count"
 }
 
 # ===== Interactive shell =====
@@ -305,7 +232,6 @@ case "${1-}" in
     clean)
         mkdir -p ~/.cache/OLS
         rm -rf ~/.cache/OLS/*
-        : > "$LOG_FILE"
         ;;
     -e)
         shift
