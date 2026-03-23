@@ -14,14 +14,18 @@ Open Linux Shell (OLS)
 usage:
     ols              - start interactive shell
     ols --help       - show this help
+    ols --version    - show OLS version
+    ols <File>.ols   - execute OLS script
     ols doctor       - run diagnostics
+    ols update       - update OLS
+    ols clean        - clear cache
 
 interactive:
     help             - show this help
     exit             - exit OLS
     PATH             - show PATH or OLS tree
-    doctor           - run diagnostics
-    <command> [args] - run system command
+    doctor           - run diagnostics 
+    <command> [args] - run system or plugin command
 EOF
 }
 ols_update() {
@@ -226,7 +230,6 @@ fi
 
 # ===== Main =====
 case "${1-}" in
-        ;;
     --version)
         echo "$OLS_VERSION"
         ;;
