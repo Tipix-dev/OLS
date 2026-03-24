@@ -33,7 +33,8 @@ EOF
 if [[ $# -eq 0 || "${1-}" == "--help" ]]; then
     show_help
     exit 0
-ficommand -v wget >/dev/null 2>&1 || warn "wget not found"
+fi
+command -v wget >/dev/null 2>&1 || warn "wget not found"
 command -v curl >/dev/null 2>&1 || warn "wget not found"
 
 # ===== Main =====
