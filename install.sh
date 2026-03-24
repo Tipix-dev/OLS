@@ -4,11 +4,19 @@ IFS=$'\n\t'
 
 REPO="artemkolba321-spec/OLS"
 echo "[OLS] Installing..."
-
+AUTO_YES=false
+if [[ "${1-}" == "-y" ]]; then
+    AUTO_YES=true
+fi
 # ===== Confirm =====
-printf "This will modify your shell config. Continue? [y/N]: "
-read confirm
-if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
+if [ "$AUTO_YES" = true ]; then
+    confirm="y"
+else
+    printf "This will modify your shell config. Continue? [y/N]: "
+    read confirm
+fi
+if [[ "$confirm" != "y" && "$confirm" != "Y"  ]]; then
+    
     echo
     echo "[OLS] Canceled"
     exit 0
