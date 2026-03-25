@@ -1,17 +1,8 @@
 # OLS
 ![OLS Banner](assets/banner.svg)<br>
 OLS (Open Linux Shell) is a toolkit of CLI utilities designed to make terminal workflows more predictable, logged, and pipeline-friendly.
-### **Warning**
 
-> Arch Linux is recommended for OLS because it's easy to set up.<br>
-> We plan to use AUR and all scripts are set up on Arch.
 
-## installation
-```bash
-bash <(curl -sSL https://raw.githubusercontent.com/artemkolba321-spec/OLS/main/install.sh)
-```
-
-everything is ready
 ## philosophy
 1. **Everything must be logged**  
    - All actions are recorded, making it easy to spot errors (EE) and trace what happened.
@@ -29,3 +20,10 @@ everything is ready
    - Packages are downloaded once and can be used offline afterwards.
    - predictability
    - the user learns once
+
+## installation
+```bash
+bash <(curl -sSL https://raw.githubusercontent.com/artemkolba321-spec/OLS/main/install.sh)
+```
+
+everything is ready
