@@ -27,7 +27,7 @@ case "${1-}" in
 }
 EOF
 
-        SECRET=$(openssl rand -base64 384)
+        SECRET="$(head /dev/urandom | tr -dc 0-9 A-Z a-z | head -c 135)"
         PUB="$(head /dev/urandom | tr -dc 0-9 | head -c 10)"
         
         mkdir -p keys
@@ -80,8 +80,7 @@ EOF
         fi
 
         if [[ ! -f "$KEY_FILE" ]]; then
-            SECRET=$(openssl rand -base64 384)
-            echo "$SECRET" > "$KEY_FILE"
+            SECRET="$(head /dev/urandom | tr -dc 0-9 A-Z a-z | head -c 135)"            echo "$SECRET" > "$KEY_FILE"
             echo "Secret key generated: $KEY_FILE"
         else
             echo "Secret key exists: $KEY_FILE"
