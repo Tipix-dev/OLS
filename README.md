@@ -2,7 +2,8 @@
 
 ![OLS Banner](assets/banner.svg)<br>
 OLS is a toolkit of CLI utilities designed to make terminal workflows more predictable, logged, and pipeline-friendly.
-
+> OLS is an early-stage MVP.
+> Expect breaking changes. We're exploring ideas and looking for contributors.
 
 ## philosophy
 1. **Everything must be logged**  
