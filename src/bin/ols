@@ -127,7 +127,7 @@ ols_doctor() {
 
     SYSTEM_DIRS=("$OLS_DIR" "$BIN_DIR")
     SYSTEM_FILES=("$LOG_FILE")
-    DEPENDENCIES=(git wget bash tree realpath curl lua jq make openssl)
+    DEPENDENCIES=(git wget bash tree realpath curl lua jq make)
     PY_DEPS=(textual)
 
     for dir in "${SYSTEM_DIRS[@]}"; do

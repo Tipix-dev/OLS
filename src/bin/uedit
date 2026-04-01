@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 # OLS command: uedit
+
 OLS_DIR="$HOME/.local/share/OLS"
 LOG_FILE="$OLS_DIR/logs.log"
 FILE="$1"
 
-EDITOR="${EDITOR:-nano}"
+if [[ $# -eq 0 ]]; then
+    echo "Usage: uedit <file>"
+    exit 1
+fi
 
-echo "Opening $FILE with $EDITOR..."
-"$EDITOR" "$FILE"
+echo "Opening $FILE with UEdit..."
+python3 "$OLS_DIR/lib/UEdit/main.py" "$FILE"
 
-echo "$(date '+%Y-%m-%d %H:%M:%S') [OLS][uedit][INFO] Edited $FILE using $EDITOR" >> "$LOG_FILE"
+echo "$(date '+%Y-%m-%d %H:%M:%S') [OLS][uedit][INFO] Edited $FILE using UEdit" >> "$LOG_FILE"
