@@ -2,6 +2,11 @@
 
 All significant changes to the OLS project are documented here.
 
+## [0.5.1]
+### Added
+- new system modules:
+  - `sysd`
+
 ## [0.5.0] - 02-04-2026
 ### Added
 - flag -l for `mkfile`
