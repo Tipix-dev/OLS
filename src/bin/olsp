@@ -23,6 +23,7 @@ case "${1-}" in
 {
   "name": "$PLUGIN_NAME",
   "version": "0.1.0",
+  "bin": false,
   "author": "$USER"
 }
 EOF
@@ -44,6 +45,7 @@ EOF
 
         # create template plugin.lua
         cat > plugin.lua <<'EOF'
+#!/usr/bin/env lua
 print("Hello from plugin!")
 EOF
 
@@ -102,6 +104,114 @@ EOF
         echo "Plugin built: $PLUGIN_NAME.olsp"
         info "Built plugin: $PLUGIN_NAME"
         ;;
+    install)
+        PACKAGE_FILE="${2-}"
+        [[ -z "$PACKAGE_FILE" ]] && ee "Usage: olsp install <package.olsp>"
+        [[ ! -f "$PACKAGE_FILE" ]] && ee "File not found: $PACKAGE_FILE"
+
+        PLUGIN_NAME="$(basename "$PACKAGE_FILE" .olsp)"
+        TARGET_DIR="$PLUGINS_DIR/$PLUGIN_NAME"
+        BIN_DIR="$OLS_DIR/bin"
+
+        mkdir -p "$PLUGINS_DIR" "$BIN_DIR"
+
+        # ===== CLEAN OLD INSTALL =====
+        if [[ -d "$TARGET_DIR" ]]; then
+            warn "Reinstalling plugin: $PLUGIN_NAME"
+            rm -rf "$TARGET_DIR"
+        fi
+
+        # ===== SAFE EXTRACT =====
+        TMP_DIR="$(mktemp -d)"
+        tar -xzf "$PACKAGE_FILE" -C "$TMP_DIR"
+
+        [[ ! -d "$TMP_DIR/$PLUGIN_NAME" ]] && {
+            rm -rf "$TMP_DIR"
+            ee "Invalid package structure"
+        }
+
+        EXTRACTED="$TMP_DIR/$PLUGIN_NAME"
+
+        # ===== KEY CHECK (BEFORE INSTALL) =====
+        KEY_FILE="$EXTRACTED/keys/$PLUGIN_NAME.key"
+        PUB_FILE="$EXTRACTED/keys/$PLUGIN_NAME.pub"
+
+        if [[ ! -f "$KEY_FILE" || ! -f "$PUB_FILE" ]]; then
+            echo "⚠️  Package is missing keys:"
+            [[ ! -f "$KEY_FILE" ]] && echo "  - secret key (.key) not found"
+            [[ ! -f "$PUB_FILE" ]] && echo "  - public key (.pub) not found"
+            echo
+            echo "This package cannot be verified."
+            printf "Do you want to continue? (y/N): "
+            read -r answer
+
+            if [[ "$answer" != "y" && "$answer" != "Y" ]]; then
+                echo "Installation cancelled"
+                rm -rf "$TMP_DIR"
+                exit 1
+            fi
+        else
+            echo "✔ Keys found. Package marked as trusted."
+        fi
+
+        # ===== MOVE INTO SYSTEM =====
+        mv "$EXTRACTED" "$TARGET_DIR"
+        rm -rf "$TMP_DIR"
+
+        # ===== VALIDATE =====
+        [[ ! -f "$TARGET_DIR/package.json" ]] && ee "package.json missing"
+        [[ ! -f "$TARGET_DIR/plugin.lua" ]] && ee "plugin.lua missing"
+
+        # ===== PARSE BIN =====
+        BIN_MODE="$(grep -o '"bin":[^,}]*' "$TARGET_DIR/package.json" || true)"
+
+        if echo "$BIN_MODE" | grep -q "true"; then
+            TARGET="$TARGET_DIR/plugin.lua"
+            LINK="$BIN_DIR/$PLUGIN_NAME"
+
+            chmod +x "$TARGET"
+
+            FIRST_LINE="$(head -n1 "$TARGET" 2>/dev/null || echo "")"
+
+            if [[ "$FIRST_LINE" != "#!"* ]]; then
+                echo "⚠️  Plugin '$PLUGIN_NAME' marked as CLI (bin: true), but no shebang found."
+                echo "File: $TARGET"
+                echo
+                echo "Example fix:"
+                echo "  #!/usr/bin/env lua"
+                echo
+
+                printf "Auto-fix shebang? (Y/n): "
+                read -r answer
+
+                if [[ "$answer" == "n" || "$answer" == "N" ]]; then
+                    warn "Skipping CLI registration"
+                else
+                    echo "Fixing shebang..."
+                    sed -i '1i #!/usr/bin/env lua' "$TARGET"
+                fi
+            fi
+
+            # ===== FINAL CLI LINK =====
+            if head -n1 "$TARGET" | grep -q "^#!"; then
+                ln -sf "$TARGET" "$LINK"
+                echo "✔ CLI installed: $PLUGIN_NAME"
+            else
+                warn "CLI not installed (missing shebang)"
+            fi
+        fi
+
+        # ===== PATH CHECK =====
+        if ! echo "$PATH" | grep -q "$BIN_DIR"; then
+            echo
+            echo "⚠️  $BIN_DIR is not in your PATH"
+            echo "Add this to your shell config:"
+            echo "export PATH=\"$BIN_DIR:\$PATH\""
+        fi
+
+        echo "✔ Plugin installed: $PLUGIN_NAME"
+        info "Installed plugin: $PLUGIN_NAME"
+        ;;
     run)
         if [[ -n "${2-}" ]]; then
             # run installed plugin
@@ -121,48 +231,7 @@ EOF
         lua "$PLUGIN_PATH"
         ;;
 
-    install)
-        PACKAGE_FILE="${2-}"
-        [[ -z "$PACKAGE_FILE" ]] && warn "Usage: olsp install <package.olsp>"
-        [[ ! -f "$PACKAGE_FILE" ]] && warn "File not found: $PACKAGE_FILE"
 
-        
-
-        # get plugin name from archive
-        PLUGIN_NAME="$(basename "$PACKAGE_FILE" .olsp)"
-        TARGET_DIR="$PLUGINS_DIR/$PLUGIN_NAME"
-
-        # clean old installation if exists
-        [[ -d "$TARGET_DIR" ]] && rm -rf "$TARGET_DIR"
-
-        # extract archive
-        mkdir -p "$TARGET_DIR"
-        tar -xzf "$PACKAGE_FILE" -C "$PLUGINS_DIR"
-
-        KEY_FILE="$TARGET_DIR/keys/$PLUGIN_NAME.key"
-        PUB_FILE="$TARGET_DIR/keys/$PLUGIN_NAME.pub"
-
-        if [[ ! -f "$KEY_FILE" || ! -f "$PUB_FILE" ]]; then
-            echo "Package is missing keys."
-            [[ ! -f "$KEY_FILE" ]] && echo "  - secret key (.key) not found"
-            [[ ! -f "$PUB_FILE" ]] && echo "  - public key (.pub) not found"
-            echo "It is not recommended to download this package."
-            printf "Do you really want to install this package? (y/N)"
-            read -r answer
-            if [[ "$answer" != "y" && "$answer" != "Y" ]]; then
-                echo "Installation cancelled"
-                rm -rf "$TARGET_DIR"
-                exit 1
-            fi
-        else
-            echo "Both keys found. Package trusted."
-        fi
-
-        # validate package.json
-        [[ ! -f "$TARGET_DIR/package.json" ]] && ee "package.json not found in package"
-        echo "Plugin '$PLUGIN_NAME' installed to $PLUGINS_DIR"
-        info "Installed plugin: $PLUGIN_NAME"
-        ;;
     uninstall)
         PLUGIN_NAME="${2-}"
         [[ -z "$PLUGIN_NAME" ]] && warn "Usage: olsp uninstall <plugin-name>"
