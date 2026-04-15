@@ -12,8 +12,7 @@ fi
 if [ "$AUTO_YES" = true ]; then
     confirm="y"
 else
-    printf "This will modify your shell config. Continue? [y/N]: "
-    read -p confirm < /dev/tty
+    read -rp "This will modify your shell config. Continue? [y/N]: " confirm < /dev/tty
 fi
 if [[ "$confirm" != "y" && "$confirm" != "Y"  ]]; then
     
