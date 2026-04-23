@@ -33,6 +33,7 @@ install:
 	@chmod 755 $(BIN)/* 2>/dev/null || true
 	@chmod 644 $(LOGS) 2>/dev/null || true
 	@chmod -R 700 $(LIB)/ 2>/dev/null || true
+	@chmod -R 1777 $(PLUG)/ 2>/dev/null || true
 	@echo "OLS installed successfully."
 
 uninstall:
