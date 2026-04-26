@@ -2,7 +2,7 @@
 
 All significant changes to the OLS project are documented here.
 
-## [Unreleased]
+## [0.5.1] - 2026-04-26
 ### Added
 - new system modules:
   - `sysd`

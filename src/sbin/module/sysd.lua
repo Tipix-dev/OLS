@@ -1,5 +1,6 @@
-if #arg < 2 then
-    error("Error: usage: run sysd <action> <service>")
+if #arg < 1 then
+    print("Error: usage: run sysd <action> <service>")
+    os.exit(1)
 end
 
 local action = arg[1]
@@ -10,8 +11,6 @@ if action == "on" then
     cmd = "systemctl --user enable " .. service
 elseif action == "off" then
     cmd = "systemctl --user disable " .. service
-elseif action == "reload" then
-    cmd = "systemctl --user restart systemd"
 else
     error("Error: unknown subcommand: " .. action)
 end
