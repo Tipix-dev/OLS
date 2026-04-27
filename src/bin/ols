@@ -45,8 +45,8 @@ ols_update() {
 
     # ===== Current version/ref =====
     CURRENT=$(cat "$OLS_DIR/.version" 2>/dev/null || echo "0.0.0")
-    REPO="artemkolba321-spec/OLS"
-    STATE_FILE="$HOME/.local/share/ols/state.json"
+    REPO="Tipix-dev/OLS"
+    STATE_FILE="$HOME/.local/share/OLS/state.json"
     mkdir -p "$(dirname "$STATE_FILE")"
 
     # ===== Determine latest ref =====
@@ -201,11 +201,7 @@ interactive_shell() {
         esac
     done
 }
-<<<<<<< Updated upstream
-if [[ "${1-}" == "--help" ]]; then
-=======
 if [[ "${1-}"  == "--help" ]]; then
->>>>>>> Stashed changes
     show_help
     exit 0
 fi
