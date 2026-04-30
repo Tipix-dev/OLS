@@ -1,4 +1,4 @@
-if #arg < 1 then
+if #arg < 2 then
     print("Error: usage: run sysd <action> <service>")
     os.exit(1)
 end
