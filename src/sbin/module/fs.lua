@@ -5,6 +5,7 @@ end
 
 local type = arg[1]
 local mountpoint = arg[2]
+local cmd
 
 if type == "ext4" then
     cmd = "mkfs.ext4 " .. mountpoint .. " >/dev/null"

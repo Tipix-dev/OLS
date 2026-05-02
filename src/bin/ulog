@@ -4,7 +4,6 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-LOG_FILE="$HOME/.local/share/OLS/logs.log"
 source "$HOME/.local/share/OLS/lib/env.sh"
 
 die() {
@@ -63,7 +62,7 @@ case "$1" in
         : > "$LOG_FILE"
         echo "ulog: log file cleared"
         ;;
-    
+
     --help)
         show_help
         ;;

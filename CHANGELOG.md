@@ -5,6 +5,10 @@ All significant changes to the OLS project are documented here.
 ## [Unreleased]
 ### Added
 - Usage Policy
+- debug loging
+- new system modules:
+  - `fs`
+
 
 ## [0.5.1] - 2026-04-26
 ### Added

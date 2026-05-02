@@ -5,7 +5,9 @@ LIB := $(OLS_DIR)/lib
 SBIN := $(OLS_DIR)/sbin
 PLUG := $(OLS_DIR)/plugins
 ASSETS := $(OLS_DIR)/assets
-LOGS := $(OLS_DIR)/logs.log
+LOGS := $(OLS_DIR)/logs
+LOG_FILE := $(LOGS)/events.log
+DEBUG_LOG_FILE := $(LOGS)/debug.log
 VERSION := $(OLS_DIR)/.version
 LEVEL := $(OLS_DIR)/.loglevel
 
@@ -22,16 +24,16 @@ all: install
 
 install:
 	@echo "Installing OLS to $(OLS_DIR)"
-	@install -d $(BIN) $(LIB) $(SBIN) $(PLUG) $(ASSETS)
-	@touch $(LOGS)
-	@cp -r $(SRC_LEVEL) $(LEVEL)  2>/dev/null || true
+	@install -d $(BIN) $(LIB) $(SBIN) $(PLUG) $(ASSETS) $(LOGS)
+	@touch $(LOG_FILE) $(DEBUG_LOG_FILE)
 	@cp -r $(SRC_VERSION) $(VERSION)  2>/dev/null || true
 	@cp -r $(SRC_BIN)/* $(BIN)/ 2>/dev/null || true
 	@cp -r $(SRC_LIB)/* $(LIB)/ 2>/dev/null || true
 	@cp -r $(SRC_ASSETS)/* $(ASSETS)/ 2>/dev/null || true
 	@cp -r $(SRC_SBIN)/* $(SBIN)/ 2>/dev/null || true
 	@chmod 755 $(BIN)/* 2>/dev/null || true
-	@chmod 755 $(LOGS) 2>/dev/null || true
+	@chmod 744 $(LOG_FILE) 2>/dev/null || true
+	@chmod 744 $(DEBUG_LOG_FILE) 2>/dev/null || true
 	@chmod -R 700 $(LIB)/ 2>/dev/null || true
 	@chmod -R 1777 $(PLUG)/ 2>/dev/null || true
 	@echo "OLS installed successfully."
