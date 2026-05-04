@@ -13,7 +13,6 @@ gx - Git exec (clone wrapper)
 
 usage:
     gx <user>/<repo>
-    gx <HTTPS>
     gx <SSH>
 
 description:
@@ -32,9 +31,6 @@ repo="$1"
 
 # Determine URL and directory name
 if [[ "$repo" =~ ^https://github.com/ ]]; then
-    url="$repo"
-    dir="$(basename "$repo" .git)"
-elif [[ "$repo" =~ ^git@github.com: ]]; then
     url="$repo"
     dir="$(basename "$repo" .git)"
 else
