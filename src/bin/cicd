@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# OLS command: gx
+
+set -euo pipefail
+IFS=$'\n\t'
+
+source "$HOME/.local/share/OLS/lib/env.sh"
+
+show_help() {
+    cat <<'EOF'
+cicd - auto CI/CD
+
+usage:
+    cicd init     Create CI/CD
+    cicd upgrade  Upgrade CI/CD
+description:
+    This is a utility for automating work with CI/CD.
+EOF
+}
+
+# ===== Args =====
+if [[ $# -eq 0 || "$1" == "--help" ]]; then
+    show_help
+    exit 0
+fi
+
+case "${1-}" in
+    init)
+        echo "Select a stack:"
+        echo "[P] Python"
+        echo "[G] Go"
+        echo "[N] Node.js"
+
+        read -rp "(P/G/N): " STACK
+
+        case "$STACK" in
+          p|P) STACK="python" ;;
+          g|G) STACK="go" ;;
+          n|N) STACK="node" ;;
+          *) echo "Invalid stack"; exit 1 ;;
+        esac
+
+        read -rp "Enable tests? (Y/n): " TESTS
+        read -rp "Enable docker? (Y/n): " DOCKER
+        read -rp "Enable lint? (Y/n): " LINT
+        read -rp "Enable deploy? (Y/n): " DEPLOY
+
+        [[ "$TESTS" != "n" && "$TESTS" != "N" ]] && TESTS=true || TESTS=false
+        [[ "$DOCKER" != "n" && "$DOCKER" != "N" ]] && DOCKER=true || DOCKER=false
+        [[ "$LINT" != "n" && "$LINT" != "N" ]] && LINT=true || LINT=false
+        [[ "$DEPLOY" != "n" && "$DEPLOY" != "N" ]] && DEPLOY=true || DEPLOY=false
+        CONFIG=$(cat <<EOF
+{
+    "stack": "$STACK",
+    "tests": $TESTS,
+    "docker": $DOCKER,
+    "lint": $LINT,
+    "deploy": $DEPLOY
+}
+EOF
+)
+        mkdir -p .github/workflows
+
+        python3 "$OLS_DIR/lib/cicd_generator.py" <<< "$CONFIG" \
+        > .github/workflows/ci.yml
+
+        echo "✔ CI created at .github/workflows/ci.yml"
+        ;;
+esac
