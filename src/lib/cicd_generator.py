@@ -70,7 +70,7 @@ def generate_python():
     ]
 
     if tests:
-        steps.append(step("Install pytaest", run="pip install pytest"))
+        steps.append(step("Install pytest", run="pip install pytest"))
         steps.append(step("Run tests", run="pytest"))
 
     if lint:
@@ -106,7 +106,7 @@ def generate_go():
 
     if docker:
         steps.append(step("Docker build", run="docker build -t app ."))
-        steps.append(step("Docker run", run="docker run -it app"))
+        steps.append(step("Docker run", run="docker run app"))
 
     if deploy:
         steps.append(step("Build", run="go build -o app ."))
