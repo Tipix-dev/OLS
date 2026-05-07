@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# OLS command: gx
+# OLS command: cicd
 
 set -euo pipefail
 IFS=$'\n\t'

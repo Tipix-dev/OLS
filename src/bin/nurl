@@ -39,17 +39,17 @@ command -v curl >/dev/null 2>&1 || warn "wget not found"
 
 # ===== Main =====
 case "$1" in
-    
+
     -o)
-        if [[ "$2" == http://* || "$2" == https://* ]]; then
+        if [[ "$2" =~ ^https?:// ]]; then
             curl -Lko "$3" "$2"
-            info "Saved $2 -> $3"        
+            info "Saved $2 -> $3"
         else
             ee "invalid argument: $2"
         fi
         ;;
     *)
-        if [[ "$1" == http://* || "$1" == https://* ]]; then
+        if [[ "$1" =~ ^https?:// ]]; then
             wget "$1"
             info "fetch $1"
         else
