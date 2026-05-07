@@ -2,7 +2,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-REPO="artemkolba321-spec/OLS"
+REPO="Tipix-dev/OLS"
 echo "[OLS] Installing..."
 AUTO_YES=false
 if [[ "${1-}" == "-y" ]]; then
@@ -16,7 +16,7 @@ else
     read confirm
 fi
 if [[ "$confirm" != "y" && "$confirm" != "Y"  ]]; then
-    
+
     echo
     echo "[OLS] Canceled"
     exit 0
@@ -48,7 +48,7 @@ cd "$TMP_DIR"/*/ || { echo "[OLS] Failed to enter source directory"; exit 1; }
 
 # ===== Install =====
 echo "[OLS] Installing..."
-make install 
+make install
 
 # ===== RC detection =====
 detect_rc_file() {
