@@ -1,7 +1,0 @@
-[general]
-log_level = INFO
-
-[olsp.sources]
-Include = []
-
-

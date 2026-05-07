@@ -14,20 +14,6 @@ Usage: hp <command>
 
 Displays help information for OLS commands.
 
-Available commands:
-    gx           Git clone wrapper (clone repos by user/repo shorthand)
-    hp           Show help for any OLS command (this command)
-    lslog        View OLS activity logs
-    mkfile       Create files or directories
-    nurl         Download files from URLs
-    ols          Start the OLS interactive shell
-    olsp         OLS plugin manager
-    open         Open files with the default application
-    targz        Create or extract .tar.gz archives
-    uedit        Edit files with your preferred editor
-    ulog         Log messages to the OLS log file
-    xsystem      Execute system commands with logging
-
 Examples:
     hp gx        show help for gx
     hp lslog     show help for lslog
@@ -37,12 +23,12 @@ EOF
 }
 
 # ===== Args =====
-if [[ $# -eq 0 || "$1" == "--help" ]]; then
+if [[ $# -eq 0 || "${1-}" == "--help" ]]; then
     show_help
     exit 0
 fi
 
-cmd="$1"
+cmd="${1-}"
 
 # ===== Check if command exists in OLS bin =====
 if [[ -x "$BIN_DIR/$cmd" ]]; then

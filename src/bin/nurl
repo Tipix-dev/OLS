@@ -38,7 +38,7 @@ command -v wget >/dev/null 2>&1 || warn "wget not found"
 command -v curl >/dev/null 2>&1 || warn "wget not found"
 
 # ===== Main =====
-case "$1" in
+case "${1-}" in
 
     -o)
         if [[ "$2" =~ ^https?:// ]]; then

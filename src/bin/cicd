@@ -12,17 +12,18 @@ cicd - auto CI/CD
 
 usage:
     cicd init     Create CI/CD
-    cicd upgrade  Upgrade CI/CD
 description:
     This is a utility for automating work with CI/CD.
 EOF
 }
 
 # ===== Args =====
-if [[ $# -eq 0 || "$1" == "--help" ]]; then
+if [[ $# -eq 0 || "${1-}" == "--help" ]]; then
     show_help
     exit 0
 fi
+
+command -v python3 >/dev/null 2>&1 || ee "python not found"
 
 case "${1-}" in
     init)
@@ -64,6 +65,7 @@ EOF
         python3 "$OLS_DIR/lib/cicd_generator.py" <<< "$CONFIG" \
         > .github/workflows/ci.yml
 
-        echo "✔ CI created at .github/workflows/ci.yml"
+        echo "✔ CI/CD created at .github/workflows/ci.yml"
+        info "✔ CI/CD created stack=$STACK"
         ;;
 esac
