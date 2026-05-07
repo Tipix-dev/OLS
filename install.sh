@@ -2,7 +2,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-REPO="artemkolba321-spec/OLS"
+REPO="Tipix-dev/OLS"
 echo "[OLS] Installing..."
 AUTO_YES=false
 if [[ "${1-}" == "-y" || ${1-} == "-yes" ]]; then
