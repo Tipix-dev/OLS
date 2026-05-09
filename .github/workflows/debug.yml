@@ -18,7 +18,7 @@ jobs:
         run: |
           sudo apt update && sudo apt install -y lua5.1 luarocks
           python -m pip install pytest
-          sudo luarocks install luacov -y
+          sudo luarocks install luacov
       - name: Bash test
         run: |
           find src -type f -print0 | while IFS= read -r -d '' f; do
@@ -47,7 +47,7 @@ jobs:
         run: |
           sudo apt update && sudo apt install -y shellcheck luarocks
           python -m pip install ruff
-          sudo luarocks install luacheck -y
+          sudo luarocks install luacheck
       - name: Bash lint
         run: |
           find src -type f -print0 | while IFS= read -r -d '' f; do
