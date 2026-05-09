@@ -8,13 +8,14 @@ local mountpoint = arg[2]
 local cmd
 
 if type == "ext4" then
-    cmd = "mkfs.ext4 " .. mountpoint .. " >/dev/null"
+    cmd = "mkfs.ext4 " .. mountpoint
 elseif type == "xfs" then
-    cmd = "mkfs.xfs " .. mountpoint .. " >/dev/null"
+    cmd = "mkfs.xfs " .. mountpoint
 elseif type == "btrfs" then
-    cmd = "mkfs.btrfs " .. mountpoint .. " >/dev/null"
+    cmd = "mkfs.btrfs " .. mountpoint
 else
-    error("Error: unknown subcommand: " .. type)
+    print("Error: unknown subcommand: " .. type)
+    os.exit(1)
 end
 
 

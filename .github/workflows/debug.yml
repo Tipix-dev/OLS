@@ -5,28 +5,64 @@ on:
   pull_request:
 
 jobs:
-  debug:
+  tests:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
       - name: Install deps
-        run: sudo apt-get update && sudo apt-get install -y lua5.4
-      - name: Bash syntax check 
+        run: |
+          sudo apt update && sudo apt install -y lua5.1
+          python -m pip install pytest
+      - name: Bash test
+        run: |
+          find src -type f -print0 | while IFS= read -r -d '' f; do
+            if head -n1 "$f" | grep -qE '^#!.*(bash|sh)'; then
+              echo "Testing: $f"
+              bash -n "$f"
+            fi
+          done
+      - name: Lua test
+        run: |
+          find src -name "*.lua" -print0 | while IFS= read -r -d '' f; do
+            echo "Testing: $f"
+            lua -e 'assert(loadfile(arg[1]))' "$f"
+          done
+      - name: Python test
+        run: pytest
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install deps
+        run: |
+          sudo apt update && sudo apt install -y shellcheck luacheck
+          python -m pip install ruff
+      - name: Bash lint
         run: |
           find src -type f -print0 | while IFS= read -r -d '' f; do
             if head -n1 "$f" | grep -qE '^#!.*(bash|sh)'; then
               echo "Checking syntax: $f"
-              bash -n "$f"
+              shellcheck "$f"
             fi
           done
-      - name: Lua syntax check
+      - name: Lua lint
         run: |
           find src -name "*.lua" -print0 | while IFS= read -r -d '' f; do
-            echo "Checking Lua syntax: $f"
-            lua -e "assert(loadfile('$f'))"
+            echo "Checking syntax: $f"
+            luacheck "$f"
           done
-      - name: Install Ruff
-        run: pip install ruff
-      - name: Run Ruff
-        run: ruff check .
+      - name: Python lint
+        run: |
+          find src -name "*.py" -print0 | while IFS= read -r -d '' f; do
+            echo "Checking syntax: $f"
+            ruff check "$f"
+          done
