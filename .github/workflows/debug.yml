@@ -44,7 +44,7 @@ jobs:
           python-version: "3.12"
       - name: Install deps
         run: |
-          sudo apt update && sudo apt install -y shellcheck luarocks5.1
+          sudo apt update && sudo apt install -y shellcheck luarocks
           python -m pip install ruff
           luarocks install luacheck
       - name: Bash lint
