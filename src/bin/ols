@@ -215,6 +215,15 @@ case "${1-}" in
     --version)
         echo "$OLS_VERSION"
         ;;
+<<<<<<< HEAD
+=======
+    --LOG_LEVEL=*)
+        LOG_LEVEL="${1#*=}"
+        export LOG_LEVEL
+        echo "$LOG_LEVEL" > "$OLS_DIR/.loglevel"
+        shift
+        ;;
+>>>>>>> f5b0d54 (Fix: minor)
 
     clean)
         mkdir -p "$HOME/.cache/OLS"
@@ -231,6 +240,10 @@ case "${1-}" in
         shift
         ols_update "${@-}"
         ;;
+<<<<<<< HEAD
+=======
+
+>>>>>>> f5b0d54 (Fix: minor)
     ""|" ")
         interactive_shell
         ;;

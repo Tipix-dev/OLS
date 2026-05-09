@@ -11,6 +11,8 @@ if action == "on" then
     cmd = "systemctl --user enable " .. service
 elseif action == "off" then
     cmd = "systemctl --user disable " .. service
+elseif action == "reload" then
+    cmd = "systemctl --user restart systemd"
 else
     error("Error: unknown subcommand: " .. action)
 end
