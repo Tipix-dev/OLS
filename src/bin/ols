@@ -148,7 +148,7 @@ ols_doctor() {
         python3 -c "import $py" >/dev/null 2>&1 && echo "[OK] python module: $py" || echo "[FAIL] python module not found: $py"
     done
 
-    
+
 }
 
 # ===== Interactive shell =====
@@ -215,15 +215,12 @@ case "${1-}" in
     --version)
         echo "$OLS_VERSION"
         ;;
-<<<<<<< HEAD
-=======
     --LOG_LEVEL=*)
         LOG_LEVEL="${1#*=}"
         export LOG_LEVEL
         echo "$LOG_LEVEL" > "$OLS_DIR/.loglevel"
         shift
         ;;
->>>>>>> f5b0d54 (Fix: minor)
 
     clean)
         mkdir -p "$HOME/.cache/OLS"
@@ -240,10 +237,6 @@ case "${1-}" in
         shift
         ols_update "${@-}"
         ;;
-<<<<<<< HEAD
-=======
-
->>>>>>> f5b0d54 (Fix: minor)
     ""|" ")
         interactive_shell
         ;;

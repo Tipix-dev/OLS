@@ -44,8 +44,9 @@ jobs:
           python-version: "3.12"
       - name: Install deps
         run: |
-          sudo apt update && sudo apt install -y shellcheck luacheck
+          sudo apt update && sudo apt install -y shellcheck luarocks5.1
           python -m pip install ruff
+          luarocks install luacheck
       - name: Bash lint
         run: |
           find src -type f -print0 | while IFS= read -r -d '' f; do
