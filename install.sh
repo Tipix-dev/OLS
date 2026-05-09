@@ -60,6 +60,8 @@ detect_rc_file() {
 }
 RC_FILE="$(detect_rc_file)"
 
+cp "$RC_FILE" "$RC_FILE".bak
+
 # ===== PATH update =====
 LINE="export PATH=\"\$HOME/.local/share/OLS/bin:\$PATH\""
 if ! grep -Fxq "$LINE" "$RC_FILE" 2>/dev/null; then

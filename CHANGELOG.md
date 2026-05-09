@@ -8,6 +8,8 @@ All significant changes to the OLS project are documented here.
 - debug loging
 - new system modules:
   - `fs`
+- new commands:
+  - `cicd`
 
 
 ## [0.5.1] - 2026-04-26
