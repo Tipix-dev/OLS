@@ -1,4 +1,4 @@
-if not arg or #arg < 2 then
+if #arg < 2 then
     print("Error: usage: run fs <type> <mountpoint>")
     os.exit(1)
 end
