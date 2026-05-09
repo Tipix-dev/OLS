@@ -2,7 +2,7 @@
 
 All significant changes to the OLS project are documented here.
 
-## [Unreleased]
+## [0.5.2] - 2024-05-09
 ### Added
 - Usage Policy
 - debug loging
