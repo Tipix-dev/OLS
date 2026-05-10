@@ -1,3 +1,6 @@
 .vscode/
 .venv/
 .zed/
+
+__pycache__/
+.pytest_cache/
