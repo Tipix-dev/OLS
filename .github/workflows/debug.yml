@@ -52,7 +52,10 @@ jobs:
         run: |
           chmod +x install.sh
           ./install.sh -y
-          source ~/.bashrc
+      - name: Set environment
+        run: |
+          echo "OLS_HOME=$HOME/.local/share/OLS" >> $GITHUB_ENV
+          echo "$HOME/.local/share/OLS/bin" >> $GITHUB_PATH
       - name: Bash lint
         run: |
           find src -type f -print0 | while IFS= read -r -d '' f; do
