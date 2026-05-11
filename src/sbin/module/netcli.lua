@@ -18,4 +18,3 @@ else
     print("Unknown target: " .. arg[1])
     os.exit(1)
 end
-    
