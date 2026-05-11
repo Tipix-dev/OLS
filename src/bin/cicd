@@ -39,7 +39,7 @@ case "${1-}" in
           p|P) STACK="python" ;;
           g|G) STACK="go" ;;
           n|N) STACK="node" ;;
-          *) echo "Invalid stack"; exit 1; ee "Invalid stack" ;;
+          *) echo "Invalid stack"; ee "Invalid stack"; exit 1 ;;
         esac
 
         read -rp "Enable tests? (Y/n): " TESTS
