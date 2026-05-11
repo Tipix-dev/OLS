@@ -8,7 +8,7 @@ IFS=$'\n\t'
 source "$HOME/.local/share/OLS/lib/env.sh"
 
 die() {
-    echo "ulog: $@" >&2
+    echo "ulog: $*" >&2
     exit 1
 }
 
