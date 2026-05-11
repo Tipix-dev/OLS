@@ -29,12 +29,12 @@ case "${1-}" in
 }
 EOF
 
-        SECRET="$(head /dev/urandom | tr -dc 0-9A-Za-z | head -c 135)"
+        SECRET="$(head /dev/urandom | tr -dc '0-9A-Za-z' | head -c 135)"
         PUB="$(head /dev/urandom | tr -dc 0-9 | head -c 10)"
 
         mkdir -p keys
-        touch keys/$PLUGIN_NAME.pub
-        touch keys/$PLUGIN_NAME.key
+        touch "keys/$PLUGIN_NAME.pub"
+        touch "keys/$PLUGIN_NAME.key"
 
         echo "$PUB" > "keys/$PLUGIN_NAME.pub"
         echo "$SECRET" > "keys/$PLUGIN_NAME.key"
