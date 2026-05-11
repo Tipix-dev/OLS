@@ -45,7 +45,6 @@ ols_update() {
     done
 
     # ===== Current version/ref =====
-    CURRENT=$(cat "$OLS_DIR/.version" 2>/dev/null || echo "0.0.0")
     REPO="Tipix-dev/OLS"
     STATE_FILE="$HOME/.local/share/OLS/state.json"
     mkdir -p "$(dirname "$STATE_FILE")"
@@ -100,7 +99,7 @@ ols_update() {
     fi
 
     # ===== Extract archive =====
-    tar -xzf "$ARCHIVE" -C "$ARCHIVE_DIR"|| { echo "Extraction failed"; rm -rf "$TMP_DIR"; return 1; }
+    tar -xzf "$ARCHIVE" -C "$ARCHIVE_DIR" || { echo "Extraction failed"; rm -rf "$TMP_DIR"; return 1; }
 
     TAR_DIR=$(find "$ARCHIVE_DIR" -mindepth 1 -maxdepth 1 -type d | head -n1)
 
