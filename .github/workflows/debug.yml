@@ -54,7 +54,7 @@ jobs:
           find src -type f -print0 | while IFS= read -r -d '' f; do
             if head -n1 "$f" | grep -qE '^#!.*(bash|sh)'; then
               echo "Checking syntax: $f"
-              shellcheck "$f"
+              shellcheck -x "$f"
             fi
           done
       - name: Lua lint
