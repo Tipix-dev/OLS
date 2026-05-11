@@ -30,7 +30,7 @@ case "${1-}" in
 EOF
 
     SECRET=$(tr -dc '[:alnum:]' < /dev/urandom | head -c 135)
-    PUB="$(tr -dc '[:alnum:]' < /dev/urandom | head -c 10)"
+    PUB=$(tr -dc '[:alnum:]' < /dev/urandom | head -c 10)
 
         mkdir -p keys
         touch "keys/$PLUGIN_NAME.pub"
@@ -71,11 +71,11 @@ EOF
         KEY_DIR="$PLUGIN_PATH/keys"
         KEY_FILE="$KEY_DIR/$PLUGIN_NAME.key"
         PUB_FILE="$KEY_DIR/$PLUGIN_NAME.pub"
-
+        SECRET=$(tr -dc '[:alnum:]' < /dev/urandom | head -c 135)
+        PUB=$(tr -dc '[:alnum:]' < /dev/urandom | head -c 10)
         mkdir -p "$KEY_DIR"
 
         if [[ ! -f "$PUB_FILE" ]]; then
-            PUB="$(head /dev/urandom | tr -dc 0-9 | head -c 10)"
             echo "$PUB" > "$PUB_FILE"
             echo "Public key generated: $PUB_FILE"
         else
@@ -83,7 +83,6 @@ EOF
         fi
 
         if [[ ! -f "$KEY_FILE" ]]; then
-            SECRET="$(head /dev/urandom | tr -dc 0-9 A-Z a-z | head -c 135)"
             echo "$SECRET" > "$KEY_FILE"
             echo "Secret key generated: $KEY_FILE"
         else
