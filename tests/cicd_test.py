@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 import pytest
 
-MODULE_NAME = "src.lib.cicd_generator"  # замени если файл называется иначе
+MODULE_NAME = "src.lib.cicd_generator"
 
 
 def load_module_with_config(config: dict):

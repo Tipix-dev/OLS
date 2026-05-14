@@ -36,7 +36,7 @@ if [[ "${1-}" == "--help" ]]; then
     exit 0
 fi
 command -v wget >/dev/null 2>&1 || warn "wget not found"
-command -v curl >/dev/null 2>&1 || warn "wget not found"
+command -v curl >/dev/null 2>&1 || warn "curl not found"
 
 # ===== Main =====
 case "${1-}" in
