@@ -22,7 +22,7 @@ if [[ "$confirm" != "y" && "$confirm" != "Y"  ]]; then
 fi
 
 # ===== Dependencies =====
-for cmd in wget tar make; do
+for cmd in wget tar make jq; do
     command -v "$cmd" >/dev/null || { echo "Missing $cmd"; exit 1; }
 done
 
@@ -30,8 +30,9 @@ TMP_DIR="$(mktemp -d)"
 
 # ===== Fetch latest LTS =====
 echo "[OLS] Fetching latest LTS..."
-LATEST_TAG=$(wget -qO- "https://api.github.com/repos/$REPO/tags" | \
-    grep '"name":' | grep 'lts' | head -n1 | sed -E 's/.*"([^"]+)".*/\1/')
+LATEST_TAG=$(wget -qO- "https://api.github.com/repos/$REPO/tags" \
+  | jq -r '.[] | select(.name | contains("lts")) | .name' \
+  | head -n1)
 [[ -z "$LATEST_TAG" ]] && { echo "Failed to fetch LTS"; exit 1; }
 echo "[OLS] Latest: $LATEST_TAG"
 
@@ -60,7 +61,7 @@ detect_rc_file() {
 }
 RC_FILE="$(detect_rc_file)"
 
-cp "$RC_FILE" "$RC_FILE".bak
+[[ -f "$RC_FILE" ]] && cp "$RC_FILE" "$RC_FILE.bak"
 
 # ===== PATH update =====
 LINE="export PATH=\"\$HOME/.local/share/OLS/bin:\$PATH\""
