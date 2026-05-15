@@ -47,6 +47,7 @@ case "${1-}" in
         elif [[ -d /var/log/journal/ ]]; then
             journalctl | tail -n 50
         fi
+        ;;
     *)
         [[ ! -f "$LOG_FILE" ]] && panic "file logs.log not found"
         cat "$LOG_FILE"
