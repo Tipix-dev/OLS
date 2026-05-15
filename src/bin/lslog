@@ -40,13 +40,13 @@ fi
 # ===== Args =====
 case "${1-}" in
     -G|--global)
-        if command -v journalctl >/dev/null 2>&1; then
-            journalctl -k
-        else
-            dmesg
+        if [[ -f /var/log/messages ]]; then
+            cat "/var/log/messages"
+        elif [[ -f /var/log/syslog ]]; then
+            cat "/var/log/syslog"
+        elif [[ -d /var/log/journal/ ]]; then
+            journalctl | tail -n 50
         fi
-        exit 0
-        ;;
     *)
         [[ ! -f "$LOG_FILE" ]] && panic "file logs.log not found"
         cat "$LOG_FILE"
