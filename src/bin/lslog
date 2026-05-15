@@ -48,8 +48,12 @@ case "${1-}" in
             journalctl | tail -n 50
         fi
         ;;
+    --debug)
+        [[ ! -f "$DEBUG_LOG_FILE" ]] && panic "file debug.log not found"
+        cat "$DEBUG_LOG_FILE"
+        ;;
     *)
-        [[ ! -f "$LOG_FILE" ]] && panic "file logs.log not found"
+        [[ ! -f "$LOG_FILE" ]] && panic "file events.log not found"
         cat "$LOG_FILE"
         ;;
 esac
