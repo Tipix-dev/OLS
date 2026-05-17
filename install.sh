@@ -12,7 +12,7 @@ if [[ "${1-}" == "-y" || ${1-} == "-yes" ]]; then
 fi
 if [[ ${1-} == "--dry-run" ]]; then
     DRY_RUN=true
-    confirm="y"
+    AUTO_YES=true
 fi
 
 # ===== Confirm =====
