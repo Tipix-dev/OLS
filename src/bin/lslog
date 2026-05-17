@@ -18,7 +18,7 @@ usage:
     lslog --help       Show this help message
 
 description:
-    Prints the contents of the OLS log file (~/OLS/logs.log).
+    Prints the contents of the OLS log file (~/.local/share/OLS/logs/events.log).
     Each log entry includes a timestamp, component name, and message.
     Pipe the output to filter, sort, or search log entries.
 
