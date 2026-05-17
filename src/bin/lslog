@@ -16,6 +16,7 @@ lslog - View OLS activity logs
 usage:
     lslog              Display all log entries
     lslog --help       Show this help message
+    lslog --debug      Display all log for [EE] and [PANIC]
 
 description:
     Prints the contents of the OLS log file (~/.local/share/OLS/logs/events.log).
