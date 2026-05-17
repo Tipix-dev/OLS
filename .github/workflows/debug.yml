@@ -17,7 +17,7 @@ jobs:
       - name: Install deps
         run: |
           sudo apt update && sudo apt install -y lua5.1 luarocks
-          python -m pip install -r requirements.txt
+          python3 -m pip install -r requirements.txt
           sudo luarocks install luacov
       - name: Bash test
         run: |
@@ -34,7 +34,7 @@ jobs:
             lua -e "assert(loadfile('$f'))"
           done
       - name: Python test
-        run: pytest
+        run: pytest -v tests/
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -46,7 +46,7 @@ jobs:
       - name: Install deps
         run: |
           sudo apt update && sudo apt install -y shellcheck luarocks
-          python -m pip install -r requirements.txt
+          python3 -m pip install -r requirements.txt
           sudo luarocks install luacheck
 
       - name: Bash lint
