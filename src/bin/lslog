@@ -42,9 +42,9 @@ fi
 case "${1-}" in
     -G|--global)
         if [[ -f /var/log/messages ]]; then
-            cat "/var/log/messages" | tail -n 50
+            tail -n 50 "/var/log/messages"
         elif [[ -f /var/log/syslog ]]; then
-            cat "/var/log/syslog" | tail -n 50
+            tail -n 50 "/var/log/syslog"
         elif [[ -d /var/log/journal/ ]]; then
             journalctl | tail -n 50
         fi
