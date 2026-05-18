@@ -6,8 +6,17 @@ OLS is a toolkit of CLI utilities designed to make terminal workflows more predi
 > Expect breaking changes. We're exploring ideas and looking for contributors.
 
 ## installation
+### Standard install
 ```bash
 curl -sSL https://raw.githubusercontent.com/Tipix-dev/OLS/main/install.sh | bash
+```
+### Automatic install
+```bash
+curl -sSL https://raw.githubusercontent.com/Tipix-dev/OLS/main/install.sh | bash -s -- -y
+```
+### Preview installation
+```bash
+curl -sSL https://raw.githubusercontent.com/Tipix-dev/OLS/main/install.sh | bash -s -- --dry-run
 ```
 
 everything is ready
@@ -29,4 +38,3 @@ everything is ready
    - Packages are downloaded once and can be used offline afterwards.
    - predictability
    - the user learns once
-
