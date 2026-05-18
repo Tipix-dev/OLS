@@ -90,14 +90,28 @@ if [[ $DRY_RUN == false ]]; then
         echo "[OLS] env.sh added to $RC_FILE"
     fi
 fi
-if [[ $DRY_RUN == true ]]; then
-    cat <<EOF
+if [[ "$DRY_RUN" == true ]]; then
+cat <<EOF
 [DRY RUN MODE]
-==> what will be downloaded?
+
+==> Installation plan
+
+[1/5] Download:
 -> $LATEST_TAG.tar.gz
-==> What configs and settings should be changed?
--> $PATH_LINE for $RC_FILE
--> $ENV_LINE for $RC_FILE
+
+[2/5] Extract archive:
+-> temporary build directory
+
+[3/5] Install OLS:
+-> ~/.local/share/OLS
+
+[4/5] Backup shell config:
+-> $RC_FILE.bak
+
+[5/5] Modify shell config:
+-> append '$PATH_LINE'
+-> append '$ENV_LINE'
+
 EOF
 fi
 if [[ "$DRY_RUN" == true ]]; then
