@@ -2,7 +2,7 @@
 
 All significant changes to the OLS project are documented here.
 
-## [Unreleased]
+## [0.6.0] - 2024-05-18
 ### Added
 - SSH for `gx`
 - flag --debug for `lslog`
