@@ -4,7 +4,6 @@ set -euo pipefail
 IFS=$'\n\t'
 
 REPO="Tipix-dev/OLS"
-echo "[OLS] Installing..."
 AUTO_YES=false
 DRY_RUN=false
 if [[ "${1-}" == "-y" || ${1-} == "-yes" ]]; then
@@ -41,7 +40,6 @@ LATEST_TAG=$(wget -qO- "https://api.github.com/repos/$REPO/tags" \
   | jq -r '.[] | select(.name | contains("lts")) | .name' \
   | head -n1)
 [[ -z "$LATEST_TAG" ]] && { echo "Failed to pull LTS"; exit 1; }
-echo "[OLS] Latest: $LATEST_TAG"
 
 # ===== Download =====
 ARCHIVE="$TMP_DIR/OLS-$LATEST_TAG.tar.gz"
@@ -51,8 +49,8 @@ if [[ $DRY_RUN == false ]]; then
 fi
 
 # ===== Extract =====
-echo "[OLS] Extracting..."
 if [[ $DRY_RUN == false ]]; then
+    echo "[OLS] Extracting..."
     tar -xzf "$ARCHIVE" -C "$TMP_DIR"
     cd "$TMP_DIR"/*/ || { echo "[OLS] Failed to enter source directory"; exit 1; }
 fi
@@ -92,7 +90,7 @@ if [[ $DRY_RUN == false ]]; then
         echo "[OLS] env.sh added to $RC_FILE"
     fi
 fi
-if [[ $DRY_RUN ]]; then
+if [[ $DRY_RUN == true ]]; then
     cat <<EOF
 [DRY RUN MODE]
 ==> what will be downloaded?
@@ -102,6 +100,9 @@ if [[ $DRY_RUN ]]; then
 -> $ENV_LINE for $RC_FILE
 EOF
 fi
-echo
-echo "[OLS] Installed successfully!"
-echo "Run: source $RC_FILE or restart your shell"
+if [[ "$DRY_RUN" == true ]]; then
+    echo "[OLS] Dry run completed successfully!"
+else
+    echo "[OLS] Installed successfully!"
+    echo "Run: source $RC_FILE or restart your shell"
+fi
