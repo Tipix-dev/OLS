@@ -4,7 +4,7 @@ if #arg < 1 then
 end
 
 if arg[1] == "log" then
-    os.execute(': > ~/.local/share/OLS/logs.log')
+    os.execute(': > ~/.local/share/OLS/logs/events.log')
     print("done!")
 elseif arg[1] == "tmp" then
     os.execute('mkdir -p ~/.cache/OLS')

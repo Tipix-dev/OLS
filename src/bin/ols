@@ -104,7 +104,7 @@ ols_update() {
     fi
 
     # ===== Extract archive =====
-    tar -xzf "$ARCHIVE" -C "$ARCHIVE_DIR" || { echo "Extraction failed"; rm -rf "$TMP_DIR"; return 1; }
+    tar -xzf "$ARCHIVE" -C "$ARCHIVE_DIR" || { echo "Extraction failed"; return 1; }
 
     TAR_DIR=$(find "$ARCHIVE_DIR" -mindepth 1 -maxdepth 1 -type d | head -n1)
 
@@ -128,6 +128,7 @@ ols_doctor() {
 
     OLS_DIR="$HOME/.local/share/OLS"
     BIN_DIR="$OLS_DIR/bin"
+
     LOG_FILE="$OLS_DIR/logs/events.log"
     DEBUG_LOG_FILE="$OLS_DIR/logs/debug.log"
     VERSION_FILE="$OLS_DIR/.version"
