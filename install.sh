@@ -35,7 +35,7 @@ done
 TMP_DIR="$(mktemp -d)"
 
 # ===== Fetch latest LTS =====
-echo "[OLS] Fetching latest LTS..."
+[[ $DRY_RUN == false ]] && echo "[OLS] Fetching latest LTS..."
 LATEST_TAG=$(wget -qO- "https://api.github.com/repos/$REPO/tags" \
   | jq -r '.[] | select(.name | contains("lts")) | .name' \
   | head -n1)
